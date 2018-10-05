@@ -47,7 +47,7 @@ RespProc(Log),VMThread,9.30
 CompilerThread2,RespProc(Log),8.68
 CompactThread,Streamer(Compaction),7.86
 LogRoller,IPC Client2(HDFS),7.51
-IPC Client2(HDFS),LeaseChecker (30662),7.33
+IPC Client2(HDFS),LeaseChecker,7.33
 VMThread,NIC,7.24
 CompilerThread2,Handler,6.74
 RespProc(Compaction),NIC,6.44
@@ -64,7 +64,7 @@ CompilerThread2,IPC Client2(HDFS),3.84
 NIC,Streamer(Compaction),3.77
 NIC,Handler,3.50
 Handler,Streamer(Log),3.32
-CompilerThread2,LeaseChecker (30662),3.24
+CompilerThread2,LeaseChecker,3.24
 CacheFlusher,IPC Client2(HDFS),3.12
 RespProc(Log),IPC Reader(HDFS),2.81
 IPC Reader(HDFS),RespProc(Log),2.66
@@ -122,8 +122,8 @@ CompilerThread2,VMThread,0.04
 Handler,IPC Client2(HDFS),0.04
 Streamer(MemStore),IPC Client2(HDFS),0.04
 RespProc(Log),LogSyncer,0.04
-LeaseChecker (30662),VMThread,0.04
-RespProc(Log),LeaseChecker (30662),0.04
+LeaseChecker,VMThread,0.04
+RespProc(Log),LeaseChecker,0.04
 VMThread,RegionServer,0.04
 CompilerThread2,RespProc(MemStore),0.04
 RespProc(MemStore),IPC Reader(HDFS),0.03
