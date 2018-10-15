@@ -1,225 +1,77 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
+<html>
 <head>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
-<script src="http://d3js.org/d3.v3.js"></script>
+<title>Fang Zhou</title>
 </head>
-<style>
-path.link {
-  fill: none;
-  //stroke: #7891D6;
-  stroke-width: 2px;
-}
-circle {
-  fill: rgb(218, 87, 12);
-  //stroke: #fff;
-  stroke-width: 2px;
-}
-text {
-  fill: #000;
-  font: 15px sans-serif;
-  pointer-events: none;
-}
-</style>
 <body>
-
-<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-<img src="./wperf.png" alt="wPerf Mascot" width="70" height="70">
-<h3 class="my-0 mr-md-auto font-weight-normal">  wPerf: Identifying Critical Waiting in Multi-threaded Applications</h3>
-<nav class="my-2 my-md-0 mr-md-3">
-<button type="button" class="btn btn-primary">Upload Wait-For Graph</button>
-</nav>
-</div>
-
-<div class="row">
-<div class="col-sm-4" id="tableDiv" style="padding-left: 60px;">
-<center>
-<br>
-<h3>Wait-for Graph Details<br></h3>
-<table class="table table-bordered table-sm" id="table">
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<img src="me.png" width=200/>
+</td>
+<td>
+</td>
+<td>
+<h1>Fang Zhou</h1></br>
+Ph.D. student</br>
+Office: DL 190</br>
+<a href=https://cse.osu.edu/>Department of Computer Science and Engineering</a></br>
+<a href=https://www.osu.edu/>The Ohio State University</a></br>
+Email: zhou dot 1250 at osu.edu
+</td>
+</tr>
+</tbody>
 </table>
-</center>
+<div>
+<div>
+<h3>About me</h3>
+I am Fang Zhou, a Ph.D. student at The Ohio State University. My advisor is <a href=http://web.cse.ohio-state.edu/~wang.7564/>Dr. Yang Wang</a>.</br>
+My research interests include large-scale distributed systems, performance optimization, and cloud computing. </br>
+My CV can be found <a href="./cv.pdf">here</a>.</br>
+<font color="red">I'm looking for research internship in Summer 2019.</font>
 </div>
-<div class="col-sm-8" id="graph"></div>
+<div>
+<h3>Education</h3>
+<ul>
+<li> Ph.D. in Computer Science, 2015 - Present. The Ohio State University. Advisor: Yang Wang.
+<li> Master of Science in Computer Science, 2015. Auburn University. Advisor: Weikuan Yu.
+<li> Master of Engineering in Computer Science and Technolgoy, 2012. Harbin Institute of Technology. Advisor: Debin Zhao
+<li> Bachelor of Engineering in Computer Science and Technology, 2010. Central South University.
+</ul>
 </div>
-
+<div>
+<h3>Publications</h3>
+<ul>
+<li>"wPerf: Generic Off-CPU Analysis to Identify Bottleneck Waiting Events", Fang Zhou, Yifan Gan, Sixiang Ma, Yang Wang. To appear in OSDI 2018.</br>
+<li>"wPerf: Identifying Critical Waiting in Multi-threaded Applications", Fang Zhou, in SOSP SRC 2017.</br>
+<li>"SFMapReduce: An optimized MapReduce framework for Small Files", Fang Zhou, Hai Pham, Hao Zou, Jianhui Yue, and Weikuan Yu, in NAS 2015.</br>
+<li>"Design of an Ultrasonic Detecting System Based on LabVIEW", Changyun Miao, Fang Zhou, Chunqing Ye, and Jing Liu, in CISP 2009</br>
+<li>"Research on Application of RS-RBF Information Fusion in Gas Monitoring", Hua Fu, Dan Zhao, and Fang Zhou, Transducer and Microsystem Technologies, 2009. (In Chinese Version)</br>
+</ul>
+</div>
+<div>
+<h3>Honors and rewards</h3>
+<ul>
+<li>Travel Grants: SOSP 2017, SOSP SRC 2017.</br>
+<li>Woltosz Fellowship at Auburn University, 2013 - 2015.</br>
+<li>Scholarship at Harbin Institute of Technology, 2010 - 2012.</br>
+<li>Scholarship at Central South University, 2006 - 2010.</br>
+<li>Outstanding Freshman Scholarship at Central South University, 2006.</br>
+</ul>
+</div>
+<div>
+<h3>Hobbies</h3>
+Soccer, Basketball, and Swimming
+</div>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-122654223-1"></script>
 <script>
-// get the graph
-//d3.csv("final/hbase10.csv", function(error, links) {
-d3.csv("graph.csv", function(error, links) {
-var threshold = 18;
-var nodes = {};
-var edges = {};
-var selflarge = [];
-var selfsmall = [];
-// Compute the distinct nodes from the links.
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-links.forEach(function(link,i) {
-    link.source = nodes[link.source] || 
-        (nodes[link.source] = {name: link.source});
-    link.target = nodes[link.target] || 
-        (nodes[link.target] = {name: link.target});
-    link.value = +link.value;
-    edges[i] = link.value;
-    // New change starts
-    if (link.source == link.target) {
-	if (link.value >= threshold) {
-	    selflarge.push(link.source.name);
-	}
-	else {
-    	    selfsmall.push(link.source.name);
-	}
-    }
-    // New change ends
-});
-var width = 1280,
-    height = 960;
-var force = d3.layout.force()
-    .nodes(d3.values(nodes))
-    .links(links)
-    .size([width, height])
-    .linkDistance(300)
-    .charge(-1000)
-    .on("tick", tick)
-    .start();
-var svg = d3.select("#graph").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-// build the arrow.
-svg.append("svg:defs").selectAll("marker")
-    .data(["end"])      // Different link/path types can be defined here
-  .enter().append("svg:marker")    // This section adds in the arrows
-    .attr("id", String)
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 15)
-    .attr("refY", -1.5)
-    .attr("markerWidth", 5)
-    .attr("markerHeight", 5)
-    .attr("orient", "auto")
-  .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
-// add the links and the arrows
-var path = svg.append("svg:g").selectAll("path")
-    .data(force.links())
-    .enter().append("svg:path")
-    .attr('id', function(d,i) {return 'edgepath' + i})
-    .attr("class", "link")
-    .attr("marker-end", "url(#end)")
-    //.style("stroke", function(d) { var col = 255*(1 - Math.min(d.value,90)/90); if (d.value<threshold) return d3.rgb(col,col,col); else return d3.rgb(0,0,0)})
-    .style("stroke", function(d) {if (d.value<threshold) return d3.rgb(200,200,200); else return d3.rgb(0,0,0)})
-    .style("stroke-dasharray", function(d) { if (d.value<threshold) return ("15, 10"); else return("1,0")});
-
- var edgepaths = svg.selectAll(".edgepath")
-    .data(force.links())
-    .enter()
-    .append('path')
-    .attr({'d': function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
-            'class':'edgepath',
-            'fill-opacity':0,
-            'stroke-opacity':0,
-            //'fill': 'blue',
-            //'stroke': 'red',
-            //'fill': function(d){ var col = 255*(1 - Math.min(d.value,90)/90); return d3.rgb(col,col,col);},
-            //'stroke': function(d){ var col = 255*(1 - Math.min(d.value,90)/90); return d3.rgb(col,col,col);},
-            'id':function(d,i) {return 'edgepath'+i}})
-    .style("pointer-events", "none");
-
-//var edgelabels = svg.selectAll(".edgelabel")
-//    .data(force.links())
-//    .enter()
-//    .append('text')
-//    .style("pointer-events", "none")
-//    .attr({'class':'edgelabel',
-//            'id':function(d,i){return 'edgelabel'+i},
-//            'dx':125,
-//            'dy':-5,
-//            'font-size':15,
-//            'fill':'#aaa'});
-
-//edgelabels.append('textPath')
-//    .attr('xlink:href',function(d,i) {return '#edgepath'+i})
-//    .style("pointer-events", "none")
-//    .style("font-size",15)
-//    .text(function(d,i){return edges[i]});
-
-var drag = force.drag()
-    .on("dragstart", dragstart);
-
-function dragstart(d) {
-  d3.select(this).classed("fixed", d.fixed = true);
-}
-
-// define the nodes
-var node = svg.selectAll(".node")
-    .data(force.nodes())
-  .enter().append("g")
-    .attr("class", "node")
-    .call(force.drag);
-// add the nodes
-node.append("circle")
-    .style("fill", "MediumBlue")
-    .attr("r", 5);
-// add the text 
-node.append("text")
-    .attr("x", 0)
-    .attr("text-anchor", "middle")
-    .attr("dy", "-0.5em")
-    .style("font-size", "20px")
-    .call(drag)
-    // New change starts
-    .text(function(d) {if (selflarge.indexOf(d.name) >= 0) {return d.name+"*"} else if (selfsmall.indexOf(d.name) >= 0) {return d.name+"-"} else {return d.name}});
-    // New change ends 
-
-// add the curvy lines
-function tick() {
-    path.attr("d", function(d) {
-        var dx = d.target.x - d.source.x,
-            dy = d.target.y - d.source.y,
-            dr = Math.sqrt(dx * dx + dy * dy);
-	// New added
-	if (d.target == d.source) return null;
-        return "M" + 
-            d.source.x + "," + 
-            d.source.y + "A" + 
-            dr + "," + dr + " 0 0,1 " + 
-            d.target.x + "," + 
-            d.target.y;
-    });
-    node
-        .attr("transform", function(d) { 
-          return "translate(" + d.x + "," + d.y + ")"; });
-
-    edgepaths.attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
-        return path});       
-
-    //edgelabels.attr('transform',function(d,i){
-    //    if (d.target.x<d.source.x){
-    //        bbox = this.getBBox();
-    //        rx = bbox.x+bbox.width/2;
-    //        ry = bbox.y+bbox.height/2;
-    //        return 'rotate(180 '+rx+' '+ry+')';
-    //        }
-    //    else {
-    //        return 'rotate(0)';
-    //        }
-    //    });
-}
-});
-
-d3.text("graph.csv", function(data) {
-		var parsedCSV = d3.csv.parseRows(data);
-
-		var container = d3.select("#table")
-		.selectAll("tr")
-		.data(parsedCSV).enter()
-		.append("tr")
-
-		.selectAll("td")
-		.data(function(d) { return d; }).enter()
-		.append("td")
-		.text(function(d) { return d; });
-});
+  gtag('config', 'UA-122654223-1');
 </script>
-
 </body>
 </html>
