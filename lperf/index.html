@@ -31,10 +31,13 @@ var z = d3.scaleOrdinal()
 var ttype=new Array();
 //State type
 var stype=new Array();
+//Wait for
+var waitfor=new Array();
 
 d3.csv("zk-wo-latency", function(d, i, columns) {
-  for (i = 2, t = 0; i < columns.length; i=i+5) {console.log(i); console.log(columns[i]);d[columns[i]] = +d[columns[i]]};
+  for (i = 2, t = 0; i < columns.length; i=i+5, t++) {d[t] = columns[i+3] - columns[i+4]};
   d.total = columns[0];
+  console.log(d)
   return d;
 }, function(error, data) {
   if (error) throw error;
