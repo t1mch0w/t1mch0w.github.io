@@ -27,9 +27,14 @@ var x = d3.scaleLinear()		// y = d3.scaleLinear()
 var z = d3.scaleOrdinal()
     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
+//Thread type
+var ttype=new Array();
+//State type
+var stype=new Array();
+
 d3.csv("zk-wo-latency", function(d, i, columns) {
-  for (i = 1, t = 0; i < columns.length; ++i) {t += d[columns[i]] = +d[columns[i]]};
-  d.total = t;
+  for (i = 2, t = 0; i < columns.length; i=i+5) {console.log(i); console.log(columns[i]);d[columns[i]] = +d[columns[i]]};
+  d.total = columns[0];
   return d;
 }, function(error, data) {
   if (error) throw error;
