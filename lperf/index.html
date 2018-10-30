@@ -35,9 +35,8 @@ var stype=new Array();
 var waitfor=new Array();
 
 d3.csv("zk-wo-latency", function(d, i, columns) {
-  for (i = 2, t = 0; i < columns.length; i=i+5, t++) {d[t] = (+columns[i+3] - columns[i+2])};
+  for (i = 2, t = 0; i < columns.length; i+=5, t++) {console.log(i,t,columns[i+3],columns[i+2]);d[t] = (+columns[i+3] - columns[i+2])};
   d.total = columns[0];
-  console.log(d)
   return d;
 }, function(error, data) {
   if (error) throw error;
